@@ -37,7 +37,7 @@ main()
     
     export -f run_xcat
     
-    find ./ -name *.samp.par -execdir bash -c 'run_xcat {}' \;
+    find ./ -name "*.samp.par" -execdir bash -c 'run_xcat {}' \;
     
     run_lesion $RUNLESIONPATH $STIRPATH
     
