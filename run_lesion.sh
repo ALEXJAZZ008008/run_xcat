@@ -43,13 +43,14 @@ phantom_directory()
 }
 
 main()
-{    
+{
     export STIR=$1
+    FINDPATH=${2/"./"/$(pwd)"/"}
     
     export -f phantom_directory
     export -f sum
     
-    find ./ -name *phantom -execdir bash -c 'phantom_directory {}' \;
+    find $FINDPATH -name *phantom -execdir bash -c 'phantom_directory {}' \;
     
     exit 0
 }
