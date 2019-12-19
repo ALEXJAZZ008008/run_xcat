@@ -9,7 +9,10 @@ run_xcat()
     SAMPPAR=$(echo $1 | rev | cut -d'/' -f1 | rev) #xcat executable
     SAMPPARPATH=${1//$SAMPPAR/} #path to xcat directory
     
-    echo -e '\n' $XCATPATH $SAMPPARPATH$SAMPPAR $SAMPPARPATH '\n'
+    RUNXCATPATH=${2}
+    XCATPATH=${3}
+    
+    echo -e '\n' $RUNXCATPATH $XCATPATH $SAMPPARPATH$SAMPPAR $SAMPPARPATH '\n'
     
     $RUNXCATPATH $XCATPATH $SAMPPARPATH$SAMPPAR $SAMPPARPATH
 }
@@ -34,14 +37,21 @@ main()
     STIRPATH=${4/"./"/$(pwd)"/"}
     FINDPATH=${5/"./"/$(pwd)"/"}
     
-    export RUNXCATPATH=$RUNXCATPATH
-    export XCATPATH=$XCATPATH
+    echo -e $RUNXCATPATH "\n"
+    echo -e $XCATPATH "\n"
+    echo -e $RUNLESIONPATH "\n"
+    echo -e $STIRPATH "\n"
+    echo -e $FINDPATH "\n"
     
     export -f run_xcat
     
     echo -e "RUNNING AT PATH: " $FINDPATH '\n'
     
-    find $FINDPATH -name "*.samp.par" -execdir bash -c 'run_xcat {}' \;
+    find $FINDPATH -name "*.samp.par" | parallel --dryrun --ungroup 'run_xcat {}' $RUNXCATPATH $XCATPATH
+    
+    read -p "Press any key to coninue..."
+    
+    find $FINDPATH -name "*.samp.par" | parallel --ungroup 'run_xcat {}' $RUNXCATPATH $XCATPATH
     
     run_lesion $RUNLESIONPATH $STIRPATH $FINDPATH
     
