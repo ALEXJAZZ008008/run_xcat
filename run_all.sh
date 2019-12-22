@@ -6,6 +6,8 @@
 
 run_xcat()
 {
+    RUNXCATCURRENTDIRECTORY=$(pwd)
+    
     SAMPPAR=$(echo $1 | rev | cut -d'/' -f1 | rev) #xcat executable
     SAMPPARPATH=${1//$SAMPPAR/} #path to xcat directory
     
@@ -47,11 +49,8 @@ main()
     
     echo -e "RUNNING AT PATH: " $FINDPATH '\n'
     
-    find $FINDPATH -name "*.samp.par" | parallel --dryrun --ungroup 'run_xcat {}' $RUNXCATPATH $XCATPATH
-    
-    read -p "Press any key to coninue..."
-    
-    find $FINDPATH -name "*.samp.par" | parallel --ungroup 'run_xcat {}' $RUNXCATPATH $XCATPATH
+    find $FINDPATH -name "*.samp.par" | parallel --dryrun --ungroup --progress 'run_xcat {}' $RUNXCATPATH $XCATPATH    
+    find $FINDPATH -name "*.samp.par" | parallel --ungroup --progress 'run_xcat {}' $RUNXCATPATH $XCATPATH
     
     run_lesion $RUNLESIONPATH $STIRPATH $FINDPATH
     
